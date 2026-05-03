@@ -15,7 +15,8 @@ default: &default
   max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   username: <%= ENV.fetch("DB_USERNAME") { "root" } %>
   password: <%= ENV["DB_PASSWORD"] %>
-  socket: /tmp/mysql.sock
+  host: <%= ENV.fetch("DB_HOST") { "127.0.0.1" } %>
+  port: 3306
 
 development:
   <<: *default

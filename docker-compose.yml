@@ -1,0 +1,36 @@
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: recipemanager_development
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    command: bin/rails server -p 3001 -b 0.0.0.0
+    environment:
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: db
+      RAILS_ENV: development
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./backend:/rails
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db_data:
