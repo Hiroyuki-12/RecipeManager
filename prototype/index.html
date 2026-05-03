@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>レシピ一覧 | レシピ管理アプリ</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="header">
+      <h1><a href="index.html">🍳 レシピ管理アプリ</a></h1>
+    </header>
+
+    <main class="container">
+      <div class="search-box">
+        <input type="text" id="search" placeholder="🔍 レシピ名で検索" />
+      </div>
+
+      <div class="toolbar">
+        <span class="label-inline">カテゴリ:</span>
+        <select id="category-filter">
+          <option value="">全て</option>
+          <option value="和食">和食</option>
+          <option value="洋食">洋食</option>
+          <option value="中華">中華</option>
+          <option value="その他">その他</option>
+        </select>
+
+        <span class="label-inline">並び順:</span>
+        <select id="sort-order">
+          <option value="created_desc">新しい順</option>
+          <option value="name_asc">名前順</option>
+        </select>
+
+        <span class="spacer"></span>
+        <a href="new.html" class="btn btn-primary">+ 新規登録</a>
+      </div>
+
+      <hr class="divider" />
+
+      <div id="recipe-list" class="recipe-list"></div>
+    </main>
+
+    <script src="app.js"></script>
+    <script>
+      const listEl = document.getElementById("recipe-list");
+      const searchEl = document.getElementById("search");
+      const categoryEl = document.getElementById("category-filter");
+      const sortEl = document.getElementById("sort-order");
+
+      function render() {
+        const keyword = searchEl.value.trim().toLowerCase();
+        const category = categoryEl.value;
+        const sort = sortEl.value;
+
+        let recipes = loadRecipes();
+
+        if (keyword) {
+          recipes = recipes.filter((r) =>
+            r.title.toLowerCase().includes(keyword)
+          );
+        }
+        if (category) {
+          recipes = recipes.filter((r) => r.category === category);
+        }
+        if (sort === "name_asc") {
+          recipes.sort((a, b) => a.title.localeCompare(b.title, "ja"));
+        } else {
+          recipes.sort(
+            (a, b) => new Date(b.created_at) - new Date(a.created_at)
+          );
+        }
+
+        if (recipes.length === 0) {
+          const message =
+            keyword || category
+              ? "該当するレシピがありません"
+              : "レシピがありません";
+          listEl.innerHTML = `<div class="empty">${message}</div>`;
+          return;
+        }
+
+        listEl.innerHTML = recipes
+          .map(
+            (r) => `
+              <a class="recipe-card" href="detail.html?id=${r.id}">
+                <div class="title">${escapeHtml(r.title)}</div>
+                <div class="meta">
+                  ${escapeHtml(r.category || "未分類")} / ${
+              r.cooking_time ? r.cooking_time + "分" : "-"
+            }
+                </div>
+              </a>
+            `
+          )
+          .join("");
+      }
+
+      searchEl.addEventListener("input", render);
+      categoryEl.addEventListener("change", render);
+      sortEl.addEventListener("change", render);
+      render();
+    </script>
+  </body>
+</html>

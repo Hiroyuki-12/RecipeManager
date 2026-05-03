@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>レシピ詳細 | レシピ管理アプリ</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="header">
+      <h1><a href="index.html">🍳 レシピ管理アプリ</a></h1>
+    </header>
+
+    <main class="container">
+      <a href="index.html" class="back-link">← 一覧へ戻る</a>
+      <div id="detail"></div>
+    </main>
+
+    <div class="modal-backdrop" id="confirm-modal">
+      <div class="modal">
+        <p>このレシピを削除しますか?</p>
+        <div class="modal-actions">
+          <button class="btn" id="cancel-delete">キャンセル</button>
+          <button class="btn btn-primary" id="confirm-delete">OK</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+      const id = Number(getQueryParam("id"));
+      const recipe = getRecipe(id);
+      const detailEl = document.getElementById("detail");
+
+      if (!recipe) {
+        detailEl.innerHTML = `<div class="empty">レシピが見つかりません</div>`;
+      } else {
+        detailEl.innerHTML = `
+          <div class="detail-header">
+            <h2>${escapeHtml(recipe.title)}</h2>
+            <div class="detail-actions">
+              <a href="edit.html?id=${recipe.id}" class="btn">編集</a>
+              <button class="btn btn-danger" id="delete-btn">削除</button>
+            </div>
+          </div>
+          <div class="detail-meta">
+            <span>カテゴリ: ${escapeHtml(recipe.category || "未分類")}</span>
+            <span>調理時間: ${
+              recipe.cooking_time ? recipe.cooking_time + "分" : "-"
+            }</span>
+            <span>何人分: ${
+              recipe.servings ? recipe.servings + "人分" : "-"
+            }</span>
+          </div>
+          <hr class="divider" />
+
+          <div class="section-title">【材料】</div>
+          <ul class="ingredients-list">
+            ${recipe.ingredients
+              .map(
+                (i) =>
+                  `<li><span class="name">${escapeHtml(
+                    i.name
+                  )}</span><span class="amount">${escapeHtml(
+                    formatAmount(i)
+                  )}</span></li>`
+              )
+              .join("")}
+          </ul>
+
+          <div class="section-title">【手順】</div>
+          <ol class="steps-list">
+            ${recipe.steps
+              .map((s) => `<li>${escapeHtml(s.description)}</li>`)
+              .join("")}
+          </ol>
+
+          ${
+            recipe.memo
+              ? `<div class="section-title">【メモ】</div>
+                 <div class="memo-box">${escapeHtml(recipe.memo)}</div>`
+              : ""
+          }
+        `;
+
+        const modal = document.getElementById("confirm-modal");
+        document
+          .getElementById("delete-btn")
+          .addEventListener("click", () => modal.classList.add("open"));
+        document
+          .getElementById("cancel-delete")
+          .addEventListener("click", () => modal.classList.remove("open"));
+        document
+          .getElementById("confirm-delete")
+          .addEventListener("click", () => {
+            const list = loadRecipes().filter((r) => r.id !== recipe.id);
+            saveRecipes(list);
+            window.location.href = "index.html";
+          });
+      }
+    </script>
+  </body>
+</html>
