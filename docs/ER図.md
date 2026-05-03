@@ -26,10 +26,15 @@ erDiagram
 ### JSON 構造
 
 #### ingredients
+「材料名 / 数量 / 単位」の 3 要素を持つオブジェクトの配列。
+`amount` は文字列(数値文字列を想定)、`unit` は単位文字列。
+「少々」「適量」のように数量を伴わない場合は `amount` を空文字列とする。
+
 ```json
 [
-  { "name": "玉ねぎ", "amount": "1個" },
-  { "name": "豚肉",   "amount": "200g" }
+  { "name": "玉ねぎ", "amount": "1",   "unit": "個" },
+  { "name": "豚肉",   "amount": "200", "unit": "g" },
+  { "name": "塩",     "amount": "",    "unit": "少々" }
 ]
 ```
 

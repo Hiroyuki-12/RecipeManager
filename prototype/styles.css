@@ -1,0 +1,382 @@
+:root {
+  --bg: #fafaf7;
+  --surface: #ffffff;
+  --border: #e5e1d8;
+  --text: #2b2a26;
+  --muted: #7a766d;
+  --accent: #d97706;
+  --accent-hover: #b45309;
+  --danger: #dc2626;
+  --danger-hover: #b91c1c;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+.header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 24px;
+  box-shadow: var(--shadow);
+}
+.header h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+.header h1 a {
+  color: var(--text);
+}
+.header h1 a:hover {
+  text-decoration: none;
+  color: var(--accent);
+}
+
+.container {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.toolbar .spacer {
+  flex: 1;
+}
+
+.search-box {
+  width: 100%;
+  margin-bottom: 16px;
+}
+.search-box input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 14px;
+  background: var(--surface);
+}
+
+select,
+input[type="text"],
+input[type="number"],
+textarea {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 14px;
+  background: var(--surface);
+  font-family: inherit;
+}
+select:focus,
+input:focus,
+textarea:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+  border-color: var(--accent);
+}
+
+.label-inline {
+  font-size: 13px;
+  color: var(--muted);
+  margin-right: 4px;
+}
+
+.btn {
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 14px;
+  font-family: inherit;
+}
+.btn:hover {
+  background: #f4f1ea;
+}
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+.btn-primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+.btn-danger {
+  background: var(--surface);
+  border-color: var(--danger);
+  color: var(--danger);
+}
+.btn-danger:hover {
+  background: var(--danger);
+  color: white;
+}
+.btn-link {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 4px 8px;
+}
+.btn-link:hover {
+  color: var(--danger);
+}
+.btn-add {
+  background: none;
+  border: 1px dashed var(--border);
+  color: var(--muted);
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: inherit;
+}
+.btn-add:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.recipe-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.recipe-card {
+  display: block;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: transform 0.05s ease, box-shadow 0.1s ease;
+  color: inherit;
+}
+.recipe-card:hover {
+  box-shadow: var(--shadow);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+.recipe-card .title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.recipe-card .meta {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.empty {
+  text-align: center;
+  color: var(--muted);
+  padding: 48px 0;
+}
+
+.detail-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+.detail-header h2 {
+  margin: 0;
+  font-size: 24px;
+}
+.detail-meta {
+  color: var(--muted);
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+.detail-meta span + span {
+  margin-left: 16px;
+}
+.detail-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+hr.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 16px 0 24px;
+}
+
+.section-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 24px 0 8px;
+}
+
+.ingredients-list,
+.steps-list {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 20px;
+  margin: 0;
+}
+.ingredients-list li,
+.steps-list li {
+  padding: 6px 0;
+}
+.ingredients-list li {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px dashed var(--border);
+}
+.ingredients-list li:last-child {
+  border-bottom: none;
+}
+.ingredients-list .name {
+  font-weight: 500;
+}
+.ingredients-list .amount {
+  color: var(--muted);
+}
+.memo-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 20px;
+  white-space: pre-wrap;
+  color: var(--text);
+}
+
+.form-page h2 {
+  font-size: 22px;
+  margin: 0 0 8px;
+}
+.form-group {
+  margin-bottom: 20px;
+}
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+.required::after {
+  content: " *";
+  color: var(--danger);
+}
+.form-group input[type="text"],
+.form-group textarea {
+  width: 100%;
+}
+.form-group textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+.form-row input[type="number"] {
+  width: 100%;
+}
+
+.dynamic-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.dynamic-row .order {
+  width: 24px;
+  color: var(--muted);
+  font-size: 14px;
+  text-align: right;
+}
+.dynamic-row input[type="text"] {
+  flex: 1;
+}
+.dynamic-row .amount-input {
+  flex: 0 0 140px;
+}
+.dynamic-row .amount-num {
+  flex: 0 0 100px;
+}
+.dynamic-row .unit-select {
+  flex: 0 0 110px;
+}
+
+.error-msg {
+  color: var(--danger);
+  font-size: 12px;
+  margin-top: 4px;
+  min-height: 16px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+/* dialog */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+.modal-backdrop.open {
+  display: flex;
+}
+.modal {
+  background: var(--surface);
+  border-radius: 8px;
+  padding: 24px;
+  max-width: 360px;
+  width: 90%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+.modal p {
+  margin: 0 0 20px;
+}
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

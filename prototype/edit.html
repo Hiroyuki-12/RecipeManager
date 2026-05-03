@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>レシピ編集 | レシピ管理アプリ</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="header">
+      <h1><a href="index.html">🍳 レシピ管理アプリ</a></h1>
+    </header>
+
+    <main class="container form-page">
+      <h2>レシピ編集</h2>
+      <hr class="divider" />
+
+      <div class="form-group">
+        <label for="title" class="required">レシピ名</label>
+        <input type="text" id="title" maxlength="100" />
+        <div class="error-msg" id="error-title"></div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="category">カテゴリ</label>
+          <select id="category">
+            <option value="">未選択</option>
+            <option value="和食">和食</option>
+            <option value="洋食">洋食</option>
+            <option value="中華">中華</option>
+            <option value="その他">その他</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="cooking_time">調理時間 (分)</label>
+          <input type="number" id="cooking_time" min="0" list="cooking-time-options" placeholder="選択 / 入力" />
+          <datalist id="cooking-time-options">
+            <option value="5"></option>
+            <option value="10"></option>
+            <option value="15"></option>
+            <option value="20"></option>
+            <option value="30"></option>
+            <option value="45"></option>
+            <option value="60"></option>
+            <option value="90"></option>
+            <option value="120"></option>
+          </datalist>
+        </div>
+        <div class="form-group">
+          <label for="servings">何人分</label>
+          <input type="number" id="servings" min="1" list="servings-options" placeholder="選択 / 入力" />
+          <datalist id="servings-options">
+            <option value="1"></option>
+            <option value="2"></option>
+            <option value="3"></option>
+            <option value="4"></option>
+            <option value="5"></option>
+            <option value="6"></option>
+            <option value="7"></option>
+            <option value="8"></option>
+            <option value="9"></option>
+            <option value="10"></option>
+          </datalist>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="required">材料</label>
+        <div id="ingredients"></div>
+        <button type="button" class="btn-add" id="add-ingredient">
+          + 材料を追加
+        </button>
+        <div class="error-msg" id="error-ingredients"></div>
+      </div>
+
+      <div class="form-group">
+        <label class="required">手順</label>
+        <div id="steps"></div>
+        <button type="button" class="btn-add" id="add-step">
+          + 手順を追加
+        </button>
+        <div class="error-msg" id="error-steps"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="memo">メモ</label>
+        <textarea id="memo"></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn" id="cancel-btn">キャンセル</button>
+        <button type="button" class="btn btn-primary" id="submit-btn">
+          更新
+        </button>
+      </div>
+    </main>
+
+    <script src="app.js"></script>
+    <script src="form.js"></script>
+    <script>
+      initRecipeForm({ mode: "edit" });
+    </script>
+  </body>
+</html>
