@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/router";
+import Breadcrumb from "@/components/Breadcrumb";
 import RecipeForm from "@/components/RecipeForm";
 import { api, ApiError, type Recipe, type RecipeInput } from "@/lib/api";
 
@@ -39,23 +39,33 @@ export default function EditRecipePage() {
     }
   }
 
-  if (state.status === "loading") return <div className="empty">読み込み中...</div>;
+  if (state.status === "loading") {
+    return (
+      <>
+        <Breadcrumb href="/recipes" />
+        <div className="empty">読み込み中...</div>
+      </>
+    );
+  }
   if (state.status === "notFound" || !recipe) {
     return (
       <>
-        <Link href="/recipes" className="back-link">← 一覧へ戻る</Link>
+        <Breadcrumb href="/recipes" />
         <div className="empty">レシピが見つかりません</div>
       </>
     );
   }
 
   return (
-    <RecipeForm
-      mode="edit"
-      initial={recipe}
-      submitting={submitting}
-      onSubmit={handleSubmit}
-      onCancel={() => router.push(`/recipes/${recipe.id}`)}
-    />
+    <>
+      <Breadcrumb href={`/recipes/${recipe.id}`} label="← 詳細へ戻る" />
+      <RecipeForm
+        mode="edit"
+        initial={recipe}
+        submitting={submitting}
+        onSubmit={handleSubmit}
+        onCancel={() => router.push(`/recipes/${recipe.id}`)}
+      />
+    </>
   );
 }

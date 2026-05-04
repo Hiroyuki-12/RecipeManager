@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
+import Breadcrumb from "@/components/Breadcrumb";
 import RecipeForm from "@/components/RecipeForm";
 import { api, ApiError, type RecipeInput } from "@/lib/api";
 
@@ -20,11 +21,14 @@ export default function NewRecipePage() {
   }
 
   return (
-    <RecipeForm
-      mode="new"
-      submitting={submitting}
-      onSubmit={handleSubmit}
-      onCancel={() => router.push("/recipes")}
-    />
+    <>
+      <Breadcrumb href="/recipes" />
+      <RecipeForm
+        mode="new"
+        submitting={submitting}
+        onSubmit={handleSubmit}
+        onCancel={() => router.push("/recipes")}
+      />
+    </>
   );
 }

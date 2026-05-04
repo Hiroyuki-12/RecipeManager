@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import Breadcrumb from "@/components/Breadcrumb";
 import { api, type Recipe } from "@/lib/api";
 import { formatAmount } from "@/lib/constants";
 
@@ -42,7 +43,7 @@ export default function RecipeDetailPage() {
   if (state.status === "loading") {
     return (
       <>
-        <Link href="/recipes" className="back-link">← 一覧へ戻る</Link>
+        <Breadcrumb href="/recipes" />
         <div className="empty">読み込み中...</div>
       </>
     );
@@ -51,7 +52,7 @@ export default function RecipeDetailPage() {
   if (state.status === "notFound" || !recipe) {
     return (
       <>
-        <Link href="/recipes" className="back-link">← 一覧へ戻る</Link>
+        <Breadcrumb href="/recipes" />
         <div className="empty">レシピが見つかりません</div>
       </>
     );
@@ -59,7 +60,7 @@ export default function RecipeDetailPage() {
 
   return (
     <>
-      <Link href="/recipes" className="back-link">← 一覧へ戻る</Link>
+      <Breadcrumb href="/recipes" />
 
       <div className="detail-header">
         <h2>{recipe.title}</h2>
@@ -75,7 +76,7 @@ export default function RecipeDetailPage() {
       </div>
       <hr className="divider" />
 
-      <div className="section-title">【材料】</div>
+      <h3 className="section-title">材料</h3>
       <ul className="ingredients-list">
         {(recipe.ingredients ?? []).map((i, idx) => (
           <li key={idx}>
@@ -85,7 +86,7 @@ export default function RecipeDetailPage() {
         ))}
       </ul>
 
-      <div className="section-title">【手順】</div>
+      <h3 className="section-title">作り方</h3>
       <ol className="steps-list">
         {(recipe.steps ?? []).map((s, idx) => (
           <li key={idx}>{s.description}</li>
@@ -94,7 +95,7 @@ export default function RecipeDetailPage() {
 
       {recipe.memo && (
         <>
-          <div className="section-title">【メモ】</div>
+          <h3 className="section-title">メモ</h3>
           <div className="memo-box">{recipe.memo}</div>
         </>
       )}
@@ -104,11 +105,11 @@ export default function RecipeDetailPage() {
           <div className="modal">
             <p>このレシピを削除しますか?</p>
             <div className="modal-actions">
-              <button className="btn" onClick={() => setConfirming(false)} disabled={deleting}>
+              <button className="btn btn-strong" onClick={() => setConfirming(false)} disabled={deleting}>
                 キャンセル
               </button>
-              <button className="btn btn-primary" onClick={handleDelete} disabled={deleting}>
-                {deleting ? "削除中..." : "OK"}
+              <button className="btn btn-danger-solid" onClick={handleDelete} disabled={deleting}>
+                {deleting ? "削除中..." : "削除する"}
               </button>
             </div>
           </div>

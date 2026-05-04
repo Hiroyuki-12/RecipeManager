@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import type { Recipe, RecipeInput } from "@/lib/api";
 import { CATEGORIES, COOKING_TIME_OPTIONS, SERVINGS_OPTIONS, UNIT_OPTIONS, toHalfWidthDigits } from "@/lib/constants";
 
@@ -13,20 +13,24 @@ type Props = {
   onCancel: () => void;
 };
 
+type Errors = { title?: string; ingredients?: string; steps?: string };
+
 function initialIngredients(initial?: Recipe): IngredientRow[] {
   if (initial?.ingredients?.length) {
-    return initial.ingredients.map((i) => ({
+    const rows = initial.ingredients.map((i) => ({
       name: i.name ?? "",
       amount: i.amount ?? "",
       unit: i.unit ?? "",
     }));
+    return [...rows, { name: "", amount: "", unit: "" }];
   }
   return [{ name: "", amount: "", unit: "" }];
 }
 
 function initialSteps(initial?: Recipe): StepRow[] {
   if (initial?.steps?.length) {
-    return initial.steps.map((s) => ({ description: s.description ?? "" }));
+    const rows = initial.steps.map((s) => ({ description: s.description ?? "" }));
+    return [...rows, { description: "" }];
   }
   return [{ description: "" }];
 }
@@ -39,13 +43,55 @@ export default function RecipeForm({ mode, initial, submitting, onSubmit, onCanc
   const [memo, setMemo] = useState(initial?.memo ?? "");
   const [ingredients, setIngredients] = useState<IngredientRow[]>(() => initialIngredients(initial));
   const [steps, setSteps] = useState<StepRow[]>(() => initialSteps(initial));
-  const [errors, setErrors] = useState<{ title?: string; ingredients?: string; steps?: string }>({});
+  const [errors, setErrors] = useState<Errors>({});
+
+  const titleRef = useRef<HTMLInputElement>(null);
+  const ingredientsRef = useRef<HTMLDivElement>(null);
+  const stepsRef = useRef<HTMLDivElement>(null);
+
+  function clearError(key: keyof Errors) {
+    setErrors((e) => (e[key] ? { ...e, [key]: undefined } : e));
+  }
 
   function updateIngredient(idx: number, patch: Partial<IngredientRow>) {
-    setIngredients((rows) => rows.map((r, i) => (i === idx ? { ...r, ...patch } : r)));
+    setIngredients((rows) => {
+      const next = rows.map((r, i) => (i === idx ? { ...r, ...patch } : r));
+      // 追従型 UX: 最終行に値が入ったら自動で空行を追加
+      const last = next[next.length - 1];
+      if (idx === next.length - 1 && last.name.trim() !== "") {
+        return [...next, { name: "", amount: "", unit: "" }];
+      }
+      return next;
+    });
+    clearError("ingredients");
   }
   function updateStep(idx: number, description: string) {
-    setSteps((rows) => rows.map((r, i) => (i === idx ? { description } : r)));
+    setSteps((rows) => {
+      const next = rows.map((r, i) => (i === idx ? { description } : r));
+      const last = next[next.length - 1];
+      if (idx === next.length - 1 && last.description.trim() !== "") {
+        return [...next, { description: "" }];
+      }
+      return next;
+    });
+    clearError("steps");
+  }
+
+  function handleIngredientKeyDown(e: KeyboardEvent<HTMLInputElement>, idx: number) {
+    if (e.key === "Enter" && idx === ingredients.length - 1) {
+      e.preventDefault();
+      if (ingredients[idx].name.trim() !== "") {
+        setIngredients((rows) => [...rows, { name: "", amount: "", unit: "" }]);
+      }
+    }
+  }
+  function handleStepKeyDown(e: KeyboardEvent<HTMLInputElement>, idx: number) {
+    if (e.key === "Enter" && idx === steps.length - 1) {
+      e.preventDefault();
+      if (steps[idx].description.trim() !== "") {
+        setSteps((rows) => [...rows, { description: "" }]);
+      }
+    }
   }
 
   function handleSubmit(e: FormEvent) {
@@ -57,12 +103,21 @@ export default function RecipeForm({ mode, initial, submitting, onSubmit, onCanc
       .map((s, idx) => ({ order: idx + 1, description: s.description.trim() }))
       .filter((s) => s.description);
 
-    const newErrors: typeof errors = {};
+    const newErrors: Errors = {};
     if (!title.trim()) newErrors.title = "レシピ名を入力してください";
     if (cleanIngs.length === 0) newErrors.ingredients = "材料を 1 件以上入力してください";
     if (cleanSteps.length === 0) newErrors.steps = "手順を 1 件以上入力してください";
     setErrors(newErrors);
-    if (Object.keys(newErrors).length > 0) return;
+    if (Object.keys(newErrors).length > 0) {
+      const target = newErrors.title
+        ? titleRef.current
+        : newErrors.ingredients
+          ? ingredientsRef.current
+          : stepsRef.current;
+      target?.scrollIntoView({ behavior: "smooth", block: "center" });
+      target?.focus?.();
+      return;
+    }
 
     onSubmit({
       title: title.trim(),
@@ -80,14 +135,18 @@ export default function RecipeForm({ mode, initial, submitting, onSubmit, onCanc
       <h2>{mode === "new" ? "新規レシピ登録" : "レシピ編集"}</h2>
       <hr className="divider" />
 
-      <div className="form-group">
+      <div className={`form-group${errors.title ? " has-error" : ""}`}>
         <label htmlFor="title" className="required">レシピ名</label>
         <input
+          ref={titleRef}
           id="title"
           type="text"
           maxLength={100}
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e) => {
+            setTitle(e.target.value);
+            clearError("title");
+          }}
         />
         {errors.title && <div className="error-msg">{errors.title}</div>}
       </div>
@@ -102,7 +161,7 @@ export default function RecipeForm({ mode, initial, submitting, onSubmit, onCanc
             ))}
           </select>
         </div>
-        <div className="form-group">
+        <div className="form-group numeric">
           <label htmlFor="cooking_time">調理時間 (分)</label>
           <input
             id="cooking_time"
@@ -117,7 +176,7 @@ export default function RecipeForm({ mode, initial, submitting, onSubmit, onCanc
             {COOKING_TIME_OPTIONS.map((v) => <option key={v} value={v} />)}
           </datalist>
         </div>
-        <div className="form-group">
+        <div className="form-group numeric">
           <label htmlFor="servings">何人分</label>
           <input
             id="servings"
@@ -134,7 +193,7 @@ export default function RecipeForm({ mode, initial, submitting, onSubmit, onCanc
         </div>
       </div>
 
-      <div className="form-group">
+      <div className={`form-group${errors.ingredients ? " has-error" : ""}`} ref={ingredientsRef} tabIndex={-1}>
         <label className="required">材料</label>
         <div>
           {ingredients.map((row, idx) => (
@@ -144,6 +203,7 @@ export default function RecipeForm({ mode, initial, submitting, onSubmit, onCanc
                 placeholder="材料名"
                 value={row.name}
                 onChange={(e) => updateIngredient(idx, { name: e.target.value })}
+                onKeyDown={(e) => handleIngredientKeyDown(e, idx)}
               />
               <input
                 type="text"
@@ -164,7 +224,7 @@ export default function RecipeForm({ mode, initial, submitting, onSubmit, onCanc
               <button
                 type="button"
                 className="btn-link"
-                onClick={() => setIngredients((rows) => rows.filter((_, i) => i !== idx))}
+                onClick={() => setIngredients((rows) => (rows.length === 1 ? [{ name: "", amount: "", unit: "" }] : rows.filter((_, i) => i !== idx)))}
               >
                 削除
               </button>
@@ -184,7 +244,7 @@ export default function RecipeForm({ mode, initial, submitting, onSubmit, onCanc
         </datalist>
       </div>
 
-      <div className="form-group">
+      <div className={`form-group${errors.steps ? " has-error" : ""}`} ref={stepsRef} tabIndex={-1}>
         <label className="required">手順</label>
         <div>
           {steps.map((row, idx) => (
@@ -195,11 +255,12 @@ export default function RecipeForm({ mode, initial, submitting, onSubmit, onCanc
                 placeholder="手順"
                 value={row.description}
                 onChange={(e) => updateStep(idx, e.target.value)}
+                onKeyDown={(e) => handleStepKeyDown(e, idx)}
               />
               <button
                 type="button"
                 className="btn-link"
-                onClick={() => setSteps((rows) => rows.filter((_, i) => i !== idx))}
+                onClick={() => setSteps((rows) => (rows.length === 1 ? [{ description: "" }] : rows.filter((_, i) => i !== idx)))}
               >
                 削除
               </button>
