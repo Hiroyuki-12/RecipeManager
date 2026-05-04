@@ -251,17 +251,21 @@ hr.divider {
   padding: 12px 20px;
   margin: 0;
 }
+.steps-list {
+  padding-left: 40px;
+}
 .ingredients-list li,
 .steps-list li {
   padding: 6px 0;
+  border-bottom: 1px dashed var(--border);
+}
+.ingredients-list li:last-child,
+.steps-list li:last-child {
+  border-bottom: none;
 }
 .ingredients-list li {
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px dashed var(--border);
-}
-.ingredients-list li:last-child {
-  border-bottom: none;
 }
 .ingredients-list .name {
   font-weight: 500;
@@ -319,10 +323,11 @@ hr.divider {
   margin-bottom: 8px;
 }
 .dynamic-row .order {
-  width: 24px;
+  flex: 0 0 40px;
   color: var(--muted);
   font-size: 14px;
   text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 .dynamic-row input[type="text"] {
   flex: 1;
