@@ -8,12 +8,7 @@
 
 実際の操作を録画したデモ動画です。
 
-<!-- TODO: GitHub Issue/PR にアップロードした動画の user-attachments URL をここに貼る -->
-<!-- 例:
-https://github.com/user-attachments/assets/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
--->
-
-> 動画は別 Issue で追加予定です。
+https://github.com/Hiroyuki-12/RecipeManager/releases/download/v1.0.0/readme_demo.mp4
 
 ## 機能一覧
 
