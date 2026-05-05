@@ -54,3 +54,7 @@ tfplan
 # Claude Code local state (skills のみチームで共有するため除外しない)
 .claude/*
 !.claude/skills/
+
+# 動画ファイル（GitHub Releases で管理）
+*.mp4
+*.mov
