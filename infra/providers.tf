@@ -12,7 +12,7 @@ terraform {
     bucket         = "recipemanager-tfstate"
     key            = "prod/terraform.tfstate"
     region         = "ap-northeast-1"
-    dynamodb_table = "recipemanager-tflock"
+    use_lockfile   = true
     encrypt        = true
   }
 }
