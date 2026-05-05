@@ -1,0 +1,19 @@
+# このファイルをコピーして terraform.tfvars を作成し、各値を設定してください。
+# terraform.tfvars は .gitignore に含まれており Git 管理外です。
+
+# 自宅 IP アドレス (curl ifconfig.me で確認)
+my_ip = "xxx.xxx.xxx.xxx/32"
+
+# EC2 SSH キーペア名 (AWS に登録済みのもの)
+key_name = "recipemanager-key"
+
+# RDS の DB 名・ユーザー・パスワード
+db_name     = "recipemanager"
+db_username = "recipe_user"
+db_password = "your-strong-password"
+
+# Rails の RAILS_MASTER_KEY (backend/config/master.key の内容)
+rails_master_key = "your-master-key"
+
+# ghcr.io からイメージを pull するための GitHub PAT (read:packages 権限)
+ghcr_token = "ghp_xxxxxxxxxxxxxxxxxxxx"

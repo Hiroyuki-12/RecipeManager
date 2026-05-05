@@ -1,0 +1,23 @@
+services:
+  backend:
+    image: ghcr.io/hiroyuki-12/recipemanager-backend:latest
+    container_name: recipemanager-backend
+    restart: unless-stopped
+    environment:
+      RAILS_ENV: production
+      DATABASE_URL: mysql2://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}
+      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+      RAILS_LOG_TO_STDOUT: "true"
+    ports:
+      - "3001:80"
+
+  frontend:
+    image: ghcr.io/hiroyuki-12/recipemanager-frontend:latest
+    container_name: recipemanager-frontend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      # NEXT_PUBLIC_* はビルド時に埋め込み済みのため実行時設定不要
+    ports:
+      - "3000:3000"
